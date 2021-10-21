@@ -1,0 +1,227 @@
+import logging
+
+from aiogram import Bot, Dispatcher, executor, types
+from aiogram.types import InputFile
+from aiogram.types import ReplyKeyboardRemove,ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
+
+API_TOKEN = '2019302491:AAFS80zm_gr6EUsBvEL5g9RVlDR8Itsrl4c'
+bot = Bot(token=API_TOKEN)
+dp = Dispatcher(bot)
+
+logging.basicConfig(level=logging.INFO)
+
+#Приветствие
+
+@dp.message_handler(commands=['start'])
+async def send_welcome(message: types.Message):
+
+    buttons = [
+        types.InlineKeyboardButton(text="Да",callback_data="1"),
+        types.InlineKeyboardButton(text="Нет",callback_data="2")
+    ]
+    keyboard = types.InlineKeyboardMarkup(row_width=2)
+    keyboard.add(*buttons)
+    
+    pic1 = InputFile("D:/aaaaNastya/Photos/2a3ebd203fb110d952f422a9e6f19108-800x.jpg")
+    await bot.send_photo(message.from_user.id, pic1, caption='Добрый день! Я - бот-курьер Katerin. В нашем ресторане довольно разнообразное меню. Вы хотите сделать заказ? ',reply_markup=keyboard)
+
+    return keyboard 
+
+#Основная часть. Выбор блюда
+
+@dp.callback_query_handler(text_contains='1')
+async def callbacks_data(message: types.CallbackQuery):
+    buttons = [
+        types.InlineKeyboardButton(text="Пицца",callback_data="pizza"),
+        types.InlineKeyboardButton(text="Роллы",callback_data="rolls"),
+        types.InlineKeyboardButton(text="Паста",callback_data="pasta")
+    ]
+    keyboard = types.InlineKeyboardMarkup(row_width=2)
+    keyboard.add(*buttons)
+
+    await bot.send_message(message.from_user.id,text= 'Что вы хотите заказать?🙈',reply_markup=keyboard)
+
+#Пицца
+
+
+
+@dp.callback_query_handler(text_contains='pizza')
+async def callbacks_data(message: types.CallbackQuery):
+    buttons = [
+        types.InlineKeyboardButton(text="4 сыра",callback_data="ch"),
+        types.InlineKeyboardButton(text="Маргарита",callback_data="mar"),
+        types.InlineKeyboardButton(text="Грибная",callback_data="gr")
+    ]
+    keyboard = types.InlineKeyboardMarkup(row_width=2)
+    keyboard.add(*buttons)
+
+    await bot.send_message(message.from_user.id,text= 'Какую пиццу вы хотите?🍕',reply_markup=keyboard)
+
+
+
+@dp.callback_query_handler(text_contains='ch')
+async def callbacks_data(message: types.CallbackQuery):
+    buttons = [
+        types.InlineKeyboardButton(text="Да!Жду заказа",callback_data="thank"),
+        types.InlineKeyboardButton(text="Нет,я передумал(а). Хочу вернуться в начало",callback_data="ret"),
+    ]
+    keyboard = types.InlineKeyboardMarkup(row_width=2)
+    keyboard.add(*buttons)
+    photo1 = InputFile('D:/aaaaNastya/Photos/img-9510.jpg')
+    await bot.send_photo(message.from_user.id,photo1,caption= 'Ваш заказ: пицца "4 сыра". Так ли это?',reply_markup=keyboard)
+
+@dp.callback_query_handler(text_contains='mar')
+async def callbacks_data(message: types.CallbackQuery):
+    buttons = [
+        types.InlineKeyboardButton(text="Да!Жду заказа",callback_data="thank"),
+        types.InlineKeyboardButton(text="Нет,я передумал(а). Хочу вернуться в начало",callback_data="ret"),
+    ]
+    keyboard = types.InlineKeyboardMarkup(row_width=2)
+    keyboard.add(*buttons)
+    photo2 =InputFile('D:/aaaaNastya/Photos/1035.jpg')
+
+    await bot.send_photo(message.from_user.id,photo2,caption= 'Ваш заказ: пицца "Маргарита". Так ли это?',reply_markup=keyboard)
+
+@dp.callback_query_handler(text_contains='gr')
+async def callbacks_data(message: types.CallbackQuery):
+    buttons = [
+        types.InlineKeyboardButton(text="Да!Жду заказа",callback_data="thank"),
+        types.InlineKeyboardButton(text="Нет,я передумал(а). Хочу вернуться в начало",callback_data="ret"),
+    ]
+    keyboard = types.InlineKeyboardMarkup(row_width=2)
+    keyboard.add(*buttons)
+    photo3 =InputFile('D:/aaaaNastya/Photos/gribnaya-picca-poshagovyy-recept.jpg')
+
+    await bot.send_photo(message.from_user.id,photo3,caption= 'Ваш заказ: пицца "Грибная". Так ли это?',reply_markup=keyboard)
+        
+
+@dp.callback_query_handler(text_contains='thank')
+async def callbacks_data(message: types.CallbackQuery):
+    photo_thank =InputFile('D:/aaaaNastya/Photos/29CVAwWUETU.jpg')
+
+    await bot.send_photo(message.from_user.id,photo_thank,caption= 'Спасибо за покупку!🥰 Ваш заказ будет доставлен в течение часа')
+        
+@dp.callback_query_handler(text_contains='ret')
+async def callbacks_data(message: types.CallbackQuery):
+    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    keyboard.add(*[types.KeyboardButton(advert) for advert in ['В начало']])
+    await bot.send_message(message.from_user.id,text='Хорошо',reply_markup=keyboard)
+    return callbacks_data()
+
+
+#Роллы
+
+@dp.callback_query_handler(text_contains='rolls')
+async def callbacks_data(message: types.CallbackQuery):
+    buttons = [
+        types.InlineKeyboardButton(text="Филадельфия",callback_data="fil"),
+        types.InlineKeyboardButton(text="Дракон",callback_data="draco"),
+        types.InlineKeyboardButton(text="Унаги",callback_data="una")
+    ]
+    keyboard = types.InlineKeyboardMarkup(row_width=2)
+    keyboard.add(*buttons)
+
+    await bot.send_message(message.from_user.id,text= 'Какие роллы вы хотите?🍱',reply_markup=keyboard)
+
+@dp.callback_query_handler(text_contains='fil')
+async def callbacks_data(message: types.CallbackQuery):
+    buttons = [
+        types.InlineKeyboardButton(text="Да!Жду заказа",callback_data="thank"),
+        types.InlineKeyboardButton(text="Нет,я передумал(а). Хочу вернуться в начало",callback_data="ret"),
+    ]
+    keyboard = types.InlineKeyboardMarkup(row_width=2)
+    keyboard.add(*buttons)
+    photo1 = InputFile('D:/aaaaNastya/Photos/713e0b68-f21f-47b1-8f0f-e1db208ad952.jpg')
+    await bot.send_photo(message.from_user.id,photo1,caption= 'Ваш заказ: роллы "Филадельфия". Так ли это?',reply_markup=keyboard)
+
+@dp.callback_query_handler(text_contains='draco')
+async def callbacks_data(message: types.CallbackQuery):
+    buttons = [
+        types.InlineKeyboardButton(text="Да!Жду заказа",callback_data="thank"),
+        types.InlineKeyboardButton(text="Нет,я передумал(а). Хочу вернуться в начало",callback_data="ret"),
+    ]
+    keyboard = types.InlineKeyboardMarkup(row_width=2)
+    keyboard.add(*buttons)
+    photo2 =InputFile('D:/aaaaNastya/Photos/Rolly-Drakon.jpg')
+
+    await bot.send_photo(message.from_user.id,photo2,caption= 'Ваш заказ: роллы "Дракон". Так ли это?',reply_markup=keyboard)
+
+@dp.callback_query_handler(text_contains='una')
+async def callbacks_data(message: types.CallbackQuery):
+    buttons = [
+        types.InlineKeyboardButton(text="Да!Жду заказа",callback_data="thank"),
+        types.InlineKeyboardButton(text="Нет,я передумал(а). Хочу вернуться в начало",callback_data="ret"),
+    ]
+    keyboard = types.InlineKeyboardMarkup(row_width=2)
+    keyboard.add(*buttons)
+    photo3 =InputFile('D:/aaaaNastya/Photos/69e7817fcccfad34e325a201d5d0a510.jpg')
+
+    await bot.send_photo(message.from_user.id,photo3,caption= 'Ваш заказ: роллы "Унаги". Так ли это?',reply_markup=keyboard)
+        
+
+        
+#Паста
+
+@dp.callback_query_handler(text_contains='pasta')
+async def callbacks_data(message: types.CallbackQuery):
+    buttons = [
+        types.InlineKeyboardButton(text="Фетучини",callback_data="fet"),
+        types.InlineKeyboardButton(text="Болоньезе",callback_data="bol"),
+        types.InlineKeyboardButton(text="Арабьята",callback_data="ara")
+    ]
+    keyboard = types.InlineKeyboardMarkup(row_width=2)
+    keyboard.add(*buttons)
+
+    await bot.send_message(message.from_user.id,text= 'Какую пасту вы хотите?🍜',reply_markup=keyboard)
+
+@dp.callback_query_handler(text_contains='fet')
+async def callbacks_data(message: types.CallbackQuery):
+    buttons = [
+        types.InlineKeyboardButton(text="Да!Жду заказа",callback_data="thank"),
+        types.InlineKeyboardButton(text="Нет,я передумал(а). Хочу вернуться в начало",callback_data="ret"),
+    ]
+    keyboard = types.InlineKeyboardMarkup(row_width=2)
+    keyboard.add(*buttons)
+    photo1 = InputFile('D:/aaaaNastya/Photos/faeeeb7a73b3c1ca02c8225e83d0ee38.jpg')
+    await bot.send_photo(message.from_user.id,photo1,caption= 'Ваш заказ: паста "Фетучини". Так ли это?',reply_markup=keyboard)
+
+@dp.callback_query_handler(text_contains='bol')
+async def callbacks_data(message: types.CallbackQuery):
+    buttons = [
+        types.InlineKeyboardButton(text="Да!Жду заказа",callback_data="thank"),
+        types.InlineKeyboardButton(text="Нет,я передумал(а). Хочу вернуться в начало",callback_data="ret"),
+    ]
+    keyboard = types.InlineKeyboardMarkup(row_width=2)
+    keyboard.add(*buttons)
+    photo2 =InputFile('D:/aaaaNastya/Photos/macaron.jpg')
+
+    await bot.send_photo(message.from_user.id,photo2,caption= 'Ваш заказ: паста "Болоньезе". Так ли это?',reply_markup=keyboard)
+
+@dp.callback_query_handler(text_contains='ara')
+async def callbacks_data(message: types.CallbackQuery):
+    buttons = [
+        types.InlineKeyboardButton(text="Да!Жду заказа",callback_data="thank"),
+        types.InlineKeyboardButton(text="Нет,я передумал(а). Хочу вернуться в начало",callback_data="ret"),
+    ]
+    keyboard = types.InlineKeyboardMarkup(row_width=2)
+    keyboard.add(*buttons)
+    photo3 =InputFile('D:/aaaaNastya/Photos/Arabyata-pasta-recept-1.jpg')
+
+    await bot.send_photo(message.from_user.id,photo3,caption= 'Ваш заказ: паста "Арабьята". Так ли это?',reply_markup=keyboard)
+              
+
+
+
+
+
+@dp.callback_query_handler(text_contains='2')
+async def callbacks_data(message: types.CallbackQuery):
+
+        await bot.send_message(message.from_user.id, 'Хорошо) До свидания!')
+
+
+
+
+
+if __name__ == '__main__':
+    executor.start_polling(dp, skip_updates=True)
